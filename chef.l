@@ -1,27 +1,30 @@
-Last login: Mon Apr 15 15:28:58 on ttys000
-raji@Nithis-MacBook-Pro ~ % nvickraman@hopper.slu.edu
-zsh: command not found: nvickraman@hopper.slu.edu
-raji@Nithis-MacBook-Pro ~ % ssh nvickraman@hopper.slu.edu
-(nvickraman@hopper.slu.edu) Password: 
-(nvickraman@hopper.slu.edu) Password: 
-                                   
-  /\  /\___  _ __  _ __   ___ _ __ 
- / /_/ / _ \| '_ \| '_ \ / _ \ '__|
-/ __  / (_) | |_) | |_) |  __/ |   
-\/ /_/ \___/| .__/| .__/ \___|_|   
-            |_|   |_|              
-Last failed login: Tue Apr 16 00:05:54 CDT 2024 from 12.170.192.96 on ssh:notty
-There was 1 failed login attempt since the last successful login.
-Last login: Mon Apr 15 15:30:36 2024 from 10.178.14.23
-[nvickraman@h5 ~]$ ls
-Backup   Documents  Music     ProgLang  Share      Videos
-Desktop  Downloads  Pictures  Public    Templates  www
-[nvickraman@h5 ~]$ cd ProgLang
-[nvickraman@h5 ProgLang]$ ls
-chef.l  lex.yy.c  partb.l
-[nvickraman@h5 ProgLang]$ vi chef.l
+static int i_seen = 0; // this block is declaring a new int i_seen that we'll use later
+%}
 
+WC              [A-Za-z'] // word characters and nonword characters
+NW              [^A-Za-z']
 
+%start          INW NIW // here we are defining start conditions of in word or not in word
+
+%%
+ // rules start here
+
+\\[^ \n]+       ECHO; // anything starting with a backslash is unchaged
+
+{NW}            { BEGIN NIW; i_seen = 0; ECHO; } //  if you encounter a nonword character, echo character, reset 'i', and switch to NIW
+[.!?]$          { BEGIN NIW; i_seen = 0;
+                  printf("%c\nBork Bork Bork!",yytext[0]); } // at the end of a sentence, append bork bork bork
+
+<NIW>"bork"/{NW} ECHO;
+<NIW>"Bork"/{NW} ECHO;
+// these catch certain exceptions to provide the mock Swedish effect of Swedish Chef
+"an"            { BEGIN INW; printf("un"); }
+"An"            { BEGIN INW; printf("Un"); }
+"au"            { BEGIN INW; printf("oo"); }
+"Au"            { BEGIN INW; printf("Oo"); }
+"a"/{WC}        { BEGIN INW; printf("e"); }
+"A"/{WC}        { BEGIN INW; printf("E"); }
+"en"/{NW}       { BEGIN INW; printf("ee"); }
 <INW>"ew"       { BEGIN INW; printf("oo"); }
 <INW>"e"/{NW}   { BEGIN INW; printf("e-a"); }
 <NIW>"e"        { BEGIN INW; printf("i"); }
@@ -44,4 +47,5 @@ chef.l  lex.yy.c  partb.l
 "w"             { BEGIN INW; printf("v"); }
 "W"             { BEGIN INW; printf("V"); }
 .               { BEGIN INW; ECHO; } //this prints anything that isn't caught by a rule above.
-                                                              64,2-8        Bot
+~                                                                                                                                                                                                           
+~                             
